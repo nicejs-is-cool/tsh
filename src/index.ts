@@ -21,7 +21,7 @@ const Commands = BuiltIn as {[key: string]: Function};
 import interp from './bashinterp';
 
 export async function main(argv: string[]) {
-    terminal.log("tsh v1.1.1-" + config.build.toString().padStart(3, "0"));
+    terminal.log("tsh v1.2.0-" + config.build.toString().padStart(3, "0"));
     if (await fs.exists("/.tshrc")) {
         const tshrcdata = await fs.readFile("/.tshrc");
         await interp(tshrcdata).catch(console.error);
