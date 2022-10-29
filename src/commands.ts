@@ -116,7 +116,10 @@ export function changelog() {
         - Added command locations! (running a command that is not a direct path will make the shell look for it in PATH)
     v1.0.0 (beta)
         - Switching to bash-parser
-        - Added .tshrc`)
+        - Added .tshrc
+    v1.1.1 (beta)
+        - Added internal commands back
+        - Now using the fs.exists API function`)
 }
 export async function write2(config: typeof Config, args: string[]) {
     return await fs.writeFile(path.resolve(await Process.getWorkdir(), args[0]), args[1])
