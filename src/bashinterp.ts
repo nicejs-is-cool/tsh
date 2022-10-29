@@ -17,6 +17,14 @@ export default async function run(src: string) {
                 const name = parseWord(command.name);
                 console.log(command)
                 const args = (command.suffix || []).map((x:any) => parseWord(x));
+                if (command.prefix) {
+                    for (let cpref of command.prefix) {
+                        if (cpref.type === "AssignmentWord") {
+                            const [name, val] = cpref.text.split('=');
+                            env[name] = val;
+                        }
+                    }
+                }
                 if (util.isFilePath(name)) {
                     if (!await fs.exists(await util.getAbsolute(name))) {
                         terminal.log(`${name} not found.`);

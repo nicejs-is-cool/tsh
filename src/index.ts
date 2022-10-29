@@ -13,7 +13,7 @@ export const config = {
         'dir': 'ls',
         'rename': 'mv'
     },
-    build: 48
+    build: 49
 }
 
 const Commands = BuiltIn as {[key: string]: Function};
@@ -29,6 +29,7 @@ export async function main(argv: string[]) {
     while (true) {
         let prompt = `${chalk.green('tsh@duckos')}:${chalk.blue(await Process.getWorkdir())}$ `
         const q = await readline(prompt, prompt.length);
+        //#region Depreceated
         /*const tokens = lexer(q);
         if (!tokens) continue;
         let command = tokens[0];
@@ -74,6 +75,7 @@ export async function main(argv: string[]) {
             }
         }
         terminal.log(chalk.bold('Unknown command: ') + command);*/
+        //#endregion
         await interp(q);
     }
 }
