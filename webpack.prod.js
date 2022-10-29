@@ -19,7 +19,8 @@ module.exports = {
         path: require.resolve('path-browserify')
     },
     alias: {
-        readline: require.resolve('./src/readline/readline.js')
+        readline: require.resolve('./src/readline/readline.js'),
+        fs: require.resolve('./src/fs.ts')
     }
   },
   output: {
