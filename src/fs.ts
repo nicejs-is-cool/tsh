@@ -27,9 +27,7 @@ export function size(file: string): Promise<number> {
 export function exists(file: string): Promise<boolean> {
     //throw new Error('API removed');
     //return do_syscall("fs_exists", file)
-    return api.fs.stat(file)
-        .then(_ => true)
-        .catch(_ => false);
+    return api.fs.exists(file);
 }
 export function stat(file: string): Promise<api.fs.Stat> {
     return do_syscall("fs_stat", file);
