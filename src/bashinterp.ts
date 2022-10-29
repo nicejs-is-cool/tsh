@@ -20,7 +20,27 @@ export default async function run(src: string) {
             case "Command": {
                 const name = parseWord(command.name);
                 console.log(command)
-                const args = (command.suffix || []).map((x:any) => parseWord(x));
+                /*const args = (command.suffix || [])
+                    .map((x:any) => parseWord(x));*/
+                let args: string[] = [];
+                let fd_map: {[key: number]: number} = {}
+                let file_fd: number | null = null;
+                for (let suf of (command.suffix || [])) {
+                    if (suf.type === "Word") {
+                        args.push(suf.text);
+                        continue;
+                    }
+                    if (suf.type === "Redirect") {
+                        if (suf.op.type === "great") {
+                            file_fd = await fs.open(await util.getAbsolute(suf.file.text), "w");
+                        } else {
+                            let file_data = await fs.readFile(await util.getAbsolute(suf.file.text));
+                            file_fd = await fs.open(await util.getAbsolute(suf.file.text), "w");
+                            await fs.write(file_fd, file_data);
+                        }
+                        fd_map[1] = file_fd; // moment
+                    }
+                }
                 if (command.prefix) {
                     for (let cpref of command.prefix) {
                         if (cpref.type === "AssignmentWord") {
@@ -34,7 +54,7 @@ export default async function run(src: string) {
                         terminal.log(`${name} not found.`);
                         break;
                     }
-                    const pid = await process.mkproc(name, args, {environ: env});
+                    const pid = await process.mkproc(name, [name, ...args], {environ: env, fd_map});
                     await api.proc.wait(pid);
                     break;
                 }
@@ -48,8 +68,9 @@ export default async function run(src: string) {
                     terminal.log('Command not found: ' + name);
                     break;
                 }
-                const pid = await process.mkproc(filePath, args, {environ: env});
+                const pid = await process.mkproc(filePath, [name, ...args], {environ: env, fd_map});
                 await api.proc.wait(pid);
+                if (file_fd) await fs.close(file_fd).catch(console.error) // just in case
                 break;
             }
         }
