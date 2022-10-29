@@ -4,6 +4,10 @@ import * as util from './util';
 import * as fs from './fs';
 import findCommand from './command_locations';
 import * as terminal from './terminal'
+import * as InternalCommands from './commands';
+
+const Commands: { [key: string]: Function } = InternalCommands;
+
 export function parseWord(word: any): string {
     return word.text;
 }
@@ -32,6 +36,11 @@ export default async function run(src: string) {
                     }
                     const pid = await process.mkproc(name, args, {environ: env});
                     await api.proc.wait(pid);
+                    break;
+                }
+                if (Commands[name]) {
+                    // internal command moment
+                    await Commands[name]({}, args);
                     break;
                 }
                 const filePath = await findCommand(name+'.js');
