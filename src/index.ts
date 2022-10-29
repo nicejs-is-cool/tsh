@@ -13,7 +13,7 @@ export const config = {
         'dir': 'ls',
         'rename': 'mv'
     },
-    build: 47
+    build: 48
 }
 
 const Commands = BuiltIn as {[key: string]: Function};
@@ -21,7 +21,11 @@ const Commands = BuiltIn as {[key: string]: Function};
 import interp from './bashinterp';
 
 export async function main(argv: string[]) {
-    terminal.log("tsh v0.7.0-" + config.build.toString().padStart(3, "0"))
+    terminal.log("tsh v1.0.0-" + config.build.toString().padStart(3, "0"));
+    if (await fs.exists("/.tshrc")) {
+        const tshrcdata = await fs.readFile("/.tshrc");
+        await interp(tshrcdata).catch(console.error);
+    }
     while (true) {
         let prompt = `${chalk.green('tsh@duckos')}:${chalk.blue(await Process.getWorkdir())}$ `
         const q = await readline(prompt, prompt.length);
