@@ -33,6 +33,7 @@ declare namespace api {
             size: number;
         }
         export function stat(path: string): Promise<Stat>;
+        export function exists(path: string): Promise<boolean>;
         export function mkdir(path: string): Promise<void>;
         export function rmdir(path: string): Promise<void>;
         export function unlink(path: string): Promise<void>;
