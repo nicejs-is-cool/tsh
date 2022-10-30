@@ -13,7 +13,7 @@ export const config = {
         'dir': 'ls',
         'rename': 'mv'
     },
-    build: 60
+    build: 64
 }
 
 const Commands = BuiltIn as {[key: string]: Function};
