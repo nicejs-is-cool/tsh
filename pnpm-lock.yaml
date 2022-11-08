@@ -2,6 +2,7 @@ lockfileVersion: 5.4
 
 specifiers:
   '@types/node': ^18.11.3
+  bash-ast-traverser: ^0.5.0
   bash-parser: ^0.5.0
   chalk: ^5.1.2
   path-browserify: ^1.0.1
@@ -13,6 +14,7 @@ specifiers:
   webpack-cli: ^4.10.0
 
 dependencies:
+  bash-ast-traverser: 0.5.0
   bash-parser: 0.5.0
   chalk: 5.1.2
   path-browserify: 1.0.1
@@ -298,6 +300,11 @@ packages:
   /babylon/6.18.0:
     resolution: {integrity: sha512-q/UEjfGJ2Cm3oKV71DJz9d25TPnq5rhBVL2Q4fA5wcC3jcrdn7+SssEybFIxwAvvP+YCsCYNKughoF33GxgycQ==}
     hasBin: true
+    dev: false
+
+  /bash-ast-traverser/0.5.0:
+    resolution: {integrity: sha512-7m869g73UYMMhRIFwqrehtMAUgEHHHjGn8fmGq2Vu/TFtHGIE18s96p6z5A11OxRsqtv0hS38bFRihM/olqZGA==}
+    engines: {node: '>=4'}
     dev: false
 
   /bash-parser/0.5.0:

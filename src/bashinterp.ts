@@ -5,17 +5,19 @@ import * as fs from './fs';
 import findCommand from './command_locations';
 import * as terminal from './terminal'
 import * as InternalCommands from './commands';
+import traverse from 'bash-ast-traverser';
+import * as assert from "assert";
 
 const Commands: { [key: string]: Function } = InternalCommands;
 
-export function parseWord(word: any): string {
+/*export function parseWord(word: any): string {
     return word.text;
 }
 export async function runCommand(env: { [key: string]: string }, command: any) {
     const name = parseWord(command.name);
     console.log(command)
-    /*const args = (command.suffix || [])
-        .map((x:any) => parseWord(x));*/
+    //const args = (command.suffix || [])
+    //    .map((x:any) => parseWord(x));
     let args: string[] = [];
     let fd_map: {[key: number]: number} = {}
     let file_fd: number | null = null;
@@ -67,12 +69,32 @@ export async function runCommand(env: { [key: string]: string }, command: any) {
     await api.proc.wait(pid);
     if (file_fd) await fs.close(file_fd).catch(console.error) // just in case
     return;
+}*/
+export function runAST(ast: any) {
+    traverse(ast, {
+        Command(node: any) {
+            if (node.name.text !== '') {
+                const expectAliasCheck =
+                    node.name.maybeSimpleCommandName ||
+                    node.name.text.indexOf('$') !== -1 ||
+                    node.name.text[0].match(/[0-9]/);
+    
+                assert.ok(expectAliasCheck, `expected Command name ${JSON.stringify(node, null, 2)}`);
+            }
+            delete node.name.maybeSimpleCommandName;
+        },
+    
+        defaultMethod(node: any) {
+            assert.ok(!node.maybeSimpleCommandName, `Command name not expected ${JSON.stringify(node, null, 2)}`);
+            delete node.maybeSimpleCommandName;
+        }
+    });
 }
 export default async function run(src: string) {
     if (!src) return
-    const ast = parse(src);
     let env = await api.environ.list();
-    async function ae(ast: any) {
+    const ast = parse(src, { resolveEnv: (name: string) => env[name] });
+    /*async function ae(ast: any) {
         for (let command of ast.commands) {
             switch (command.type) {
                 case "Command": {
@@ -87,5 +109,7 @@ export default async function run(src: string) {
             
         }
     }
-    await ae(ast);
+    await ae(ast);*/
+    runAST(ast);
+    
 }
